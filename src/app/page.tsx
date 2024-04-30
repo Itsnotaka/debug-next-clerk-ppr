@@ -1,18 +1,21 @@
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 
 // random async function
 async function sleep(ms: number) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+// adding the config would allow build to work
+// export const dynamic = "force-dynamic";
+
 export default async function Home() {
-	const { userId } = auth();
+	const user = await currentUser();
 
 	await sleep(3000);
 
-	if (userId) {
-		return <h1>User {userId}</h1>;
+	if (!user) {
+		return <h1>Not Logged In</h1>;
 	}
 
-	return <h1>Home Page</h1>;
+	return <h1>User {user.id}</h1>;
 }
